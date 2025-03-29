@@ -1,0 +1,299 @@
+﻿<UserControl x:Class="HotelProgram.Views.BookingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HotelProgram.Views"
+             xmlns:local1="clr-namespace:HotelProgram.Converters"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
+             xmlns:viewmodels="clr-namespace:HotelProgram.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:BookingViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1050">
+
+    <UserControl.Resources>
+        <local1:BoolToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Search txtbx-->
+            <Grid Grid.Column="1"  Margin="15 0 20 20" Width="350" Height="50" HorizontalAlignment="Left">
+                <TextBlock Margin="10 0 10 0" 
+                               VerticalAlignment="Center" 
+                               Foreground="{StaticResource plainTextColor4}" 
+                               IsHitTestVisible="False"
+                               Panel.ZIndex="1"
+                               Text="Поиск..."
+                               Visibility="{Binding ElementName=txtSearch, Path=Text.Empty, Converter={StaticResource BoolToVis}}"/>
+
+                <TextBox x:Name="txtSearch"
+                         Style="{StaticResource textBoxSearch}"/>
+                <fa:IconImage Icon="MagnifyingGlass" 
+                              Width="15" Height="15" 
+                              VerticalAlignment="Center"
+                              Margin="0 0 15 0"
+                              HorizontalAlignment="Right"/>
+            </Grid>
+
+            <!--Add booking button-->
+            <Button Grid.Column="1"
+                    x:Name="addBookingBtn"
+                    Style="{StaticResource addBookingBtn}" 
+                    Width="190" Height="30"
+                    Margin="0 0 10 10"
+                    Command="{Binding CreateNewBookingCommand}">
+                <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                    <fa:IconImage Icon="Plus" Height="15" Width="15" 
+                                      Style="{StaticResource iconButtonIcon}"
+                                      Margin="0 0 8 0"/>
+                    <TextBlock Text="Новое бронирование" Margin="0 0 0 2"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="WordPersonalDatabtn" 
+                    Grid.Column="1"
+                    Width="auto"
+                    Height="40"
+                    HorizontalAlignment="Right"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Padding="-1 0 -1 0"
+                    Click="WordPersonalDataButton_Click"
+                    Margin="0 0 220 10">
+                <Image Source="/Images/word.png" Height="38" Width="38" />
+            </Button>
+        </Grid>
+        <Separator BorderThickness="8" BorderBrush="{StaticResource separator}" Margin="15 40 15 0"/>
+
+        <!--DataGrid-->
+        <DataGrid RowStyle="{DynamicResource DataGridRowStyle1}" 
+                  ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+                  Style="{DynamicResource DataGridStyle1}"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                  x:Name="DataGrid" 
+                  Grid.Row="1"
+                  Margin="10 0 10 15"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource color8}"
+                            Height="auto"
+                            Width="auto"
+                            Margin="35 10 0 10"
+                            HorizontalAlignment="Left">
+                        <Grid Margin="5 5 0 5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="0">
+                                <TextBlock Background="Transparent"
+                                           Text="Сотрудник: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding employees.employee_lastname}"
+                                           Margin="0 0 3 0"/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding employees.employee_name}"
+                                           Margin="0 0 3 0"/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding employees.employee_surname}"
+                                           Margin="0 0 3 0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="1">
+                                <TextBlock Background="Transparent"
+                                           Text="Выбранный тариф: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding tarifs.tarif_name}"
+                                           Margin="0 0 2 0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="2">
+                                <TextBlock Background="Transparent"
+                                           Text="Количество гостей: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding booking_count_persons}"
+                                           Margin="0 0 4 0"/>
+                                <fa:IconImage Icon="Person"
+                                              Width="14"
+                                              Height="14"
+                                              Foreground="Black"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="3">
+                                <TextBlock Background="Transparent"
+                                           Text="Количество детей: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding booking_count_childrens}"
+                                           Margin="0 0 4 0"/>
+                                <fa:IconImage Icon="Children"
+                                              Width="14"
+                                              Height="14"
+                                              Foreground="Black"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="4">
+                                <TextBlock Background="Transparent"
+                                           Text="Комментарий: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding booking_comment}"
+                                           Margin="0 0 1 0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="5">
+                                <TextBlock Background="Transparent"
+                                           Text="Общая стоимость: "/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding booking_total_cost}"/>
+                                <TextBlock Background="Transparent"
+                                           Text=" ₽"
+                                           FontSize="14"/>
+                            </StackPanel>
+
+
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="5"
+                                        Grid.Row="6">
+                                <TextBlock Background="Transparent"
+                                           Text="Статус: "
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Background="Transparent"
+                                           Text="{Binding booking_status.booking_status_name}"
+                                           Margin="0 0 4 0"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn CanUserResize="False" 
+                                        Width="auto"
+                                        ElementStyle="{StaticResource CheckBoxStyle1}">
+                    <DataGridCheckBoxColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <CheckBox Style="{StaticResource CheckBoxStyle1}"/>
+                        </DataTemplate>
+                    </DataGridCheckBoxColumn.HeaderTemplate>
+                </DataGridCheckBoxColumn>
+                <DataGridTextColumn Header="#" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding booking_id}"/>
+                <DataGridTemplateColumn Header="ФИО Клиента" 
+                                        Width="auto" 
+                                        CanUserResize="False"
+                                        IsReadOnly="True"
+                                        CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding clients.client_lastname}" Margin="5 0 5 0"/>
+                                <TextBlock Text="{Binding clients.client_name}" Margin="0 0 5 0"/>
+                                <TextBlock Text="{Binding clients.client_surname}" Margin="0 0 5 0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Дата заезда" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding booking_date_issue, StringFormat=dd/MM/yyyy HH:mm}"/>
+                <DataGridTextColumn Header="Количество суток" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding booking_count_days}"/>
+                <DataGridTextColumn Header="Дата выезда" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding booking_date_departure, StringFormat=dd/MM/yyyy HH:mm}"/>
+                <DataGridTextColumn Header="Категория номера"
+                                    Width="*"
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding RoomTypeName}"/>
+                <DataGridTextColumn Header="Номер" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding rooms.room_number}"/>
+
+                <DataGridTemplateColumn Header="Операции"
+                                        IsReadOnly="True"
+                                        Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource gridEditButton}"
+                                        Margin="5 2 2.5 2"
+                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="Pencil" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                                <Button Style="{StaticResource gridRemoveButton}"
+                                        Margin="2.5 2 5 2"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="TrashCan" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

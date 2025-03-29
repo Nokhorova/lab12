@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="HotelProgram.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HotelProgram.Views"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
+             xmlns:viewmodels="clr-namespace:HotelProgram.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:EmployeesViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1050">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Search txtbx-->
+            <Grid Grid.Column="1"  Margin="15 0 20 20" Width="350" Height="50" HorizontalAlignment="Left">
+                <TextBlock Margin="10 0 10 0" 
+                           VerticalAlignment="Center" 
+                           Foreground="{StaticResource plainTextColor4}" 
+                           IsHitTestVisible="False"
+                           Panel.ZIndex="1"
+                           Text="Поиск..."
+                           Visibility="{Binding ElementName=txtSearch, Path=Text.Empty, Converter={StaticResource BoolToVis}}"/>
+
+                <TextBox x:Name="txtSearch"
+                         Style="{StaticResource textBoxSearch}"/>
+                <fa:IconImage Icon="MagnifyingGlass" 
+                              Width="15" Height="15" 
+                              VerticalAlignment="Center"
+                              Margin="0 0 15 0"
+                              HorizontalAlignment="Right"/>
+            </Grid>
+
+            <!--Add booking button-->
+            <Button Grid.Column="1"
+                x:Name="addBookingBtn"
+                Style="{StaticResource addBookingBtn}" 
+                Width="170" Height="30"
+                Margin="0 0 10 10"
+                Command="{Binding CreateNewEmployeeCommand}">
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <fa:IconImage Icon="Plus" Height="15" Width="15" 
+                                  Style="{StaticResource iconButtonIcon}"
+                                  Margin="0 0 8 0"/>
+                    <TextBlock Text="Новый сотрудник" Margin="0 0 0 2"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <Separator BorderThickness="8" BorderBrush="{StaticResource separator}" Margin="15 40 15 0"/>
+
+        <!--DataGrid-->
+        <DataGrid RowStyle="{DynamicResource DataGridRowStyle1}" 
+                  ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+                  Style="{DynamicResource DataGridStyle1}"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                  x:Name="DataGrid" 
+                  Grid.Row="1"
+                  Margin="10 0 10 15"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn CanUserResize="False" 
+                                        Width="auto"
+                                        ElementStyle="{StaticResource CheckBoxStyle1}">
+                    <DataGridCheckBoxColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <CheckBox Style="{StaticResource CheckBoxStyle1}"/>
+                        </DataTemplate>
+                    </DataGridCheckBoxColumn.HeaderTemplate>
+                </DataGridCheckBoxColumn>
+                <DataGridTextColumn Header="#" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding employee_id}"/>
+                <DataGridTemplateColumn Header="ФИО Сотрудника" 
+                                        Width="*"
+                                        CanUserResize="False"
+                                        IsReadOnly="True"
+                                        CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding employee_lastname}" Margin="5 0 5 0"/>
+                                <TextBlock Text="{Binding employee_name}" Margin="0 0 5 0"/>
+                                <TextBlock Text="{Binding employee_surname}" Margin="0 0 5 0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Отдел" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                    Binding="{Binding department.department_name}"/>
+                <DataGridTextColumn Header="Email" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                    Binding="{Binding employee_email}"/>
+                <DataGridTextColumn Header="Контактный номер" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                    Binding="{Binding employee_contact_number}"/>
+
+                <DataGridTemplateColumn Header="Операции"
+                                        IsReadOnly="True"
+                                        Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource gridEditButton}"
+                                    Margin="5 2 2.5 2"
+                                    Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="Pencil" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                                <Button Style="{StaticResource gridRemoveButton}"
+                                    Margin="2.5 2 5 2"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="TrashCan" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

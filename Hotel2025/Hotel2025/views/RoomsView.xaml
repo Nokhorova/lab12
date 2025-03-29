@@ -1,0 +1,308 @@
+﻿<UserControl x:Class="HotelProgram.Views.RoomsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HotelProgram.Views"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
+             xmlns:viewmodels="clr-namespace:HotelProgram.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:RoomsViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1050">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Search txtbx-->
+            <Grid Grid.Column="1"  Margin="15 0 20 20" Width="350" Height="50" HorizontalAlignment="Left">
+                <TextBlock Margin="10 0 10 0" 
+                               VerticalAlignment="Center" 
+                               Foreground="{StaticResource plainTextColor4}" 
+                               IsHitTestVisible="False"
+                               Panel.ZIndex="1"
+                               Text="Поиск..."
+                               Visibility="{Binding ElementName=txtSearch, Path=Text.Empty, Converter={StaticResource BoolToVis}}"/>
+
+                <TextBox x:Name="txtSearch"
+                             Style="{StaticResource textBoxSearch}"/>
+                <fa:IconImage Icon="MagnifyingGlass" 
+                                  Width="15" Height="15" 
+                                  VerticalAlignment="Center"
+                                  Margin="0 0 15 0"
+                                  HorizontalAlignment="Right"/>
+            </Grid>
+
+            <!--Add booking button-->
+            <Button Grid.Column="1"
+                    x:Name="addBookingBtn"
+                    Style="{StaticResource addBookingBtn}" 
+                    Width="170" Height="30"
+                    Margin="0 0 10 10"
+                    Command="{Binding CreateNewRoomCommand}">
+                <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                    <fa:IconImage Icon="Plus" Height="15" Width="15" 
+                                      Style="{StaticResource iconButtonIcon}"
+                                      Margin="0 0 8 0"/>
+                    <TextBlock Text="Добавить номер" Margin="0 0 0 2"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <Separator BorderThickness="8" BorderBrush="{StaticResource separator}" Margin="15 40 15 0"/>
+
+        <!--DataGrid-->
+        <DataGrid RowStyle="{DynamicResource DataGridRowStyle1}" 
+                  ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+                  Style="{DynamicResource DataGridStyle1}"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                  x:Name="DataGrid" 
+                  Grid.Row="1"
+                  Margin="10 0 10 15"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+
+            <!--#region Всплывающее окно снизу-->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource color8}"
+                            Height="auto"
+                            Width="auto"
+                            Margin="35 10 0 10"
+                            HorizontalAlignment="Left">
+                        <Grid Margin="10 10 0 10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border BorderThickness="1"
+                                    CornerRadius="15"
+                                    BorderBrush="{StaticResource color8}"
+                                    Height="250"
+                                    Width="350">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding room_image_path}"/>
+                                </Border.Background>
+
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource color7}"
+                                    CornerRadius="15"
+                                    Height="auto" Width="410">
+                                <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0 5 0 5">
+                                    <TextBlock Text="от"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource Yandex}"
+                                           FontSize="22"
+                                           Foreground="Black"
+                                           Margin="0 0 5 0"/>
+                                    <TextBlock Text="{Binding room_type1.room_cost}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource Yandex}"
+                                           FontSize="22"
+                                           Foreground="Black"
+                                           Margin="0 0 5 0"/>
+                                    <TextBlock Text="руб."
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource Yandex}"
+                                           FontSize="22"
+                                           Foreground="Black"
+                                           Margin="0 0 10 0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Поля из property_room -->
+                            <ItemsControl ItemsSource="{Binding property_room}"
+                                          Grid.Column="1"
+                                          Margin="0 0 0 0">    
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" Height="230" Margin="10 0 10 10" HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent"
+                                                Margin="0 3 4 0"
+                                                BorderThickness="1"
+                                                BorderBrush="{StaticResource color13}"
+                                                CornerRadius="10">
+                                            <Grid Margin="10 0 10 0" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="16"/>
+                                                </Grid.RowDefinitions>
+
+                                                <!-- Иконка для property_name -->
+                                                <fa:IconImage Width="16" 
+                                                          Height="16" 
+                                                          Margin="0 0 5 0" 
+                                                          Grid.Column="0">
+                                                    <fa:IconImage.Style>
+                                                        <Style TargetType="fa:IconImage">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="WI-FI">
+                                                                    <Setter Property="Icon" Value="Wifi"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Телевизор">
+                                                                    <Setter Property="Icon" Value="Tv"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Шкаф">
+                                                                    <Setter Property="Icon" Value="PersonBooth"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Мини-бар">
+                                                                    <Setter Property="Icon" Value="MartiniGlassCitrus"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Сейф">
+                                                                    <Setter Property="Icon" Value="Vault"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Туалетные принадлежности">
+                                                                    <Setter Property="Icon" Value="ToiletPaper"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Кухонные принадлежности">
+                                                                    <Setter Property="Icon" Value="Utensils"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Кондиционер">
+                                                                    <Setter Property="Icon" Value="Fan"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Холодильник">
+                                                                    <Setter Property="Icon" Value="IceCream"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Фен">
+                                                                    <Setter Property="Icon" Value="Fan"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Двуспальная кровать">
+                                                                    <Setter Property="Icon" Value="Couch"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Односпальная кровать">
+                                                                    <Setter Property="Icon" Value="Bed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding property.unit_name}" Value="Рабочий стол">
+                                                                    <Setter Property="Icon" Value="LaptopFile"/>
+                                                                </DataTrigger>
+                                                                <!-- Добавьте другие DataTriggers для остальных свойств -->
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </fa:IconImage.Style>
+                                                </fa:IconImage>
+
+                                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                                    <TextBlock Text="{Binding property.unit_name}"/>
+                                                    <TextBlock Margin="5 0 0 0">
+                                                           <Run Text=" ( ⨯"/>
+                                                           <Run Text="{Binding quantity}"/>
+                                                           <Run Text=")"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+            <!--#endregion-->
+
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn CanUserResize="False" 
+                                        Width="auto"
+                                        ElementStyle="{StaticResource CheckBoxStyle1}">
+                    <DataGridCheckBoxColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <CheckBox Style="{StaticResource CheckBoxStyle1}"/>
+                        </DataTemplate>
+                    </DataGridCheckBoxColumn.HeaderTemplate>
+                </DataGridCheckBoxColumn>
+                <DataGridTextColumn Header="#" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding room_id}"/>
+
+                <DataGridTextColumn Header="Категория"
+                                    Width="*"
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    CellStyle="{StaticResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                    Binding="{Binding room_type1.room_type_name}"/>
+                <DataGridTextColumn Header="Номер" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding room_number}"/>
+                <DataGridTextColumn Header="Площадь (м²)" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding room_area}"/>
+                <DataGridTextColumn Header="Вместимость (чел.)" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding room_capacity}"/>
+                <DataGridTextColumn Header="Доступность (сейчас)" 
+                                    Width="*" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding room_availability}"/>
+
+                <DataGridTemplateColumn Header="Операции"
+                                        IsReadOnly="True"
+                                        Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource gridEditButton}"
+                                        Margin="5 2 2.5 2"
+                                        Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="Pencil" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                                <Button Style="{StaticResource gridRemoveButton}"
+                                        Margin="2.5 2 5 2"
+                                        Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}">
+                                    <fa:IconImage Icon="TrashCan" Style="{StaticResource iconGridEditButton}"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

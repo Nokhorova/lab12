@@ -1,0 +1,329 @@
+﻿<UserControl x:Class="HotelProgram.Views.ServicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HotelProgram.Views"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:viewmodels="clr-namespace:HotelProgram.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:ServicesViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1050">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Search txtbx-->
+            <Grid Grid.Column="1"  Margin="15 0 20 20" Width="350" Height="50" HorizontalAlignment="Left">
+                <TextBlock Margin="10 0 10 0" 
+                               VerticalAlignment="Center" 
+                               Foreground="{StaticResource plainTextColor4}" 
+                               IsHitTestVisible="False"
+                               Panel.ZIndex="1"
+                               Text="Поиск..."
+                               Visibility="{Binding ElementName=txtSearch, Path=Text.Empty, Converter={StaticResource BoolToVis}}"/>
+
+                <TextBox x:Name="txtSearch"
+                             Style="{StaticResource textBoxSearch}"/>
+                <fa:IconImage Icon="MagnifyingGlass" 
+                                  Width="15" Height="15" 
+                                  VerticalAlignment="Center"
+                                  Margin="0 0 15 0"
+                                  HorizontalAlignment="Right"/>
+            </Grid>
+
+            <!-- Первая кнопка для создания дополнительного заказа -->
+            <Button Grid.Column="1"
+                    x:Name="addAdditionalOrderBtn"
+                    Style="{StaticResource addAdditionalOrderBtnStyle}" 
+                    Width="160" Height="30"
+                    Margin="0 0 10 10"
+                    Command="{Binding CreateNewAdditionalOrderCommand}">
+                <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                    <fa:IconImage Icon="Plus" Height="15" Width="15" 
+                                      Style="{StaticResource iconButtonIcon}"
+                                      Margin="0 0 8 0"/>
+                    <TextBlock Text="Создать заказ" Margin="0 0 0 2"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Вторая кнопка, которая появляется при выборе вкладки "Услуги" -->
+            <Button Grid.Column="1"
+                    x:Name="addServiceBtn"
+                    Style="{StaticResource addServiceBtnStyle}" 
+                    Width="160" Height="30"
+                    Margin="0 0 10 10"
+                    Command="{Binding CreateNewServiceNameCommand}">
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <fa:IconImage Icon="Plus" Height="15" Width="15" 
+                                  Style="{StaticResource iconButtonIcon}"
+                                  Margin="0 0 8 0"/>
+                    <TextBlock Text="Добавить услугу" Margin="0 0 0 2"/>
+                </StackPanel>
+            </Button>
+
+
+        </Grid>
+        <Separator BorderThickness="8" BorderBrush="{StaticResource separator}" Margin="15 40 15 0"/>
+
+        <hc:TabControl x:Name="mainTabControl" Grid.Row="1" IsAnimationEnabled="True"
+                       IsTabFillEnabled="True">
+            <hc:TabItem x:Name="tabItemAdditionalOrder" Header="Дополнительные услуги">
+                <!--DataGrid-->
+                <DataGrid RowStyle="{DynamicResource DataGridRowStyle1}" 
+                  ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+                  Style="{DynamicResource DataGridStyle1}"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                  x:Name="DataGridAdditionalOrders" 
+                  Grid.Row="1"
+                  Margin="10 0 10 15"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+
+                    <!--#region Всплывающее окно снизу-->
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <Border Background="Transparent"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource color8}"
+                            Height="auto"
+                            Width="auto"
+                            Margin="35 10 0 10"
+                            HorizontalAlignment="Left">
+                                <Grid Margin="10 10 0 10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        Grid.Row="0"
+                                        Margin="0 5 0 5"
+                                        Width="250">
+                                        <TextBlock Text="Выбранные услуги:" 
+                                           FontSize="16"
+                                           FontFamily="{StaticResource Yandex}"
+                                           HorizontalAlignment="Center"/>
+                                        <Separator BorderThickness="0.4"
+                                           BorderBrush="{StaticResource color4}"
+                                           Margin="0 5 10 1"/>
+                                    </StackPanel>
+
+
+                                    <!--service_name-->
+                                    <ItemsControl ItemsSource="{Binding service}"
+                                          Grid.Column="0"
+                                          Grid.Row="1"
+                                          Margin="0 0 0 0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="2" Height="100" Margin="0 0 5 5" 
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="Transparent"
+                                                        Margin="0 3 4 0"
+                                                        BorderThickness="1"
+                                                        BorderBrush="{StaticResource color13}"
+                                                        CornerRadius="10">
+                                                    <Grid Margin="10 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="auto"/>
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="16"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Margin="5 0 5 0">
+                                                            <TextBlock Text="{Binding service_name.service_name1}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                    <!--#endregion-->
+
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn CanUserResize="False" 
+                                        Width="auto"
+                                        ElementStyle="{StaticResource CheckBoxStyle1}">
+                            <DataGridCheckBoxColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle1}"/>
+                                </DataTemplate>
+                            </DataGridCheckBoxColumn.HeaderTemplate>
+                        </DataGridCheckBoxColumn>
+                        <DataGridTextColumn Header="#" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding additional_order_id}"/>
+                        <DataGridTemplateColumn Header="ФИО Клиента" 
+                                        Width="*" 
+                                        CanUserResize="False"
+                                        IsReadOnly="True"
+                                        CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding clients.client_lastname}" Margin="5 0 5 0"/>
+                                        <TextBlock Text="{Binding clients.client_name}" Margin="0 0 5 0"/>
+                                        <TextBlock Text="{Binding clients.client_surname}" Margin="0 0 5 0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Дата заказа" 
+                                    Width="auto" 
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                    Binding="{Binding additional_order_date, StringFormat=dd/MM/yyyy HH:mm}"/>
+                        <DataGridTextColumn Header="Общая стоимость (руб.)"
+                                    Width="auto"
+                                    CanUserResize="False"
+                                    IsReadOnly="True"
+                                    Binding="{Binding additional_order_cost}"/>
+                        <DataGridTemplateColumn Header="ФИО Сотрудника" 
+                                        Width="*" 
+                                        CanUserResize="False"
+                                        IsReadOnly="True"
+                                        CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding employees.employee_lastname}" Margin="5 0 5 0"/>
+                                        <TextBlock Text="{Binding employees.employee_name}" Margin="0 0 5 0"/>
+                                        <TextBlock Text="{Binding employees.employee_surname}" Margin="0 0 5 0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Операции"
+                                        IsReadOnly="True"
+                                        Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource gridEditButton}"
+                                        Margin="5 2 2.5 2"
+                                        Command="{Binding DataContext.EditAdditionalOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                            <fa:IconImage Icon="Pencil" Style="{StaticResource iconGridEditButton}"/>
+                                        </Button>
+                                        <Button Style="{StaticResource gridRemoveButton}"
+                                        Margin="2.5 2 5 2"
+                                        Command="{Binding DataContext.DeleteAdditionalOrderCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}">
+                                            <fa:IconImage Icon="TrashCan" Style="{StaticResource iconGridEditButton}"/>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </hc:TabItem>
+            <hc:TabItem x:Name="tabItemServices" Header="Услуги">
+                <DataGrid RowStyle="{DynamicResource DataGridRowStyle1}" 
+                          ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+                          Style="{DynamicResource DataGridStyle1}"
+                          CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                          x:Name="DataGridServices" 
+                          Grid.Row="1"
+                          Margin="10 0 10 15"
+                          IsReadOnly="True"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn CanUserResize="False" 
+                                                Width="auto"
+                                                ElementStyle="{StaticResource CheckBoxStyle1}"> 
+                            <DataGridCheckBoxColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle1}"/>
+                                </DataTemplate>
+                            </DataGridCheckBoxColumn.HeaderTemplate>
+                        </DataGridCheckBoxColumn>
+                        <DataGridTextColumn Header="#" 
+                                            Width="auto" 
+                                            CanUserResize="False"
+                                            IsReadOnly="True"
+                                            Binding="{Binding service_name_id}"/>
+                        <DataGridTextColumn Header="Наименование услуги" 
+                                            Width="auto" 
+                                            CanUserResize="False"
+                                            IsReadOnly="True"
+                                            CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                            Binding="{Binding service_name1}"/>
+                        <DataGridTextColumn Header="Описание" 
+                                            Width="*" 
+                                            CanUserResize="False"
+                                            IsReadOnly="True"
+                                            CellStyle="{DynamicResource Body_Content_DataGrid_Centering_For_FIO_CLient}"
+                                            Binding="{Binding service_description}"/>
+                        <DataGridTextColumn Header="Стоимость (руб.)"
+                                            Width="auto"
+                                            CanUserResize="False"
+                                            IsReadOnly="True"
+                                            Binding="{Binding service_cost}"/>
+                        <DataGridTemplateColumn Header="Операции"
+                                                IsReadOnly="True"
+                                                Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource gridEditButton}"
+                                                Margin="5 2 2.5 2"
+                                                Command="{Binding DataContext.EditServiceNameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <fa:IconImage Icon="Pencil" Style="{StaticResource iconGridEditButton}"/>
+                                        </Button>
+                                        <Button Style="{StaticResource gridRemoveButton}"
+                                                Margin="2.5 2 5 2"
+                                                Command="{Binding DataContext.DeleteServiceNameCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}">
+                                            <fa:IconImage Icon="TrashCan" Style="{StaticResource iconGridEditButton}"/>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </hc:TabItem>
+        </hc:TabControl>
+    </Grid>
+</UserControl>
